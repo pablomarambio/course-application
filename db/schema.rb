@@ -11,7 +11,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141209161119) do
+ActiveRecord::Schema.define(version: 20141210122300) do
+
+  create_table "applications", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "course_id"
+    t.integer  "priority"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "blocks", force: true do |t|
+    t.string   "name"
+    t.time     "from"
+    t.time     "to"
+    t.integer  "course_batch_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "course_batches", force: true do |t|
+    t.string   "name"
+    t.boolean  "open_status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "courses", force: true do |t|
+    t.string   "name"
+    t.string   "classroom"
+    t.integer  "block_id"
+    t.integer  "capacity"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "results", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "course_id"
+    t.integer  "block_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -28,6 +69,8 @@ ActiveRecord::Schema.define(version: 20141209161119) do
     t.datetime "updated_at"
     t.string   "name"
     t.integer  "role"
+    t.string   "rut"
+    t.integer  "course_batch_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

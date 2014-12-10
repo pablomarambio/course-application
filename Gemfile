@@ -14,6 +14,7 @@ gem 'devise'
 gem 'haml-rails'
 gem 'simple_form'
 gem 'upmin-admin'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller', :platforms=>[:mri_21]
@@ -27,7 +28,9 @@ group :development do
   gem 'rb-fsevent', :require=>false
   gem 'rb-inotify', :require=>false
   gem 'spring-commands-rspec'
+  gem 'terminal-notifier-guard'
 end
+
 group :development, :test do
   gem 'factory_girl_rails'
   gem 'faker'
@@ -43,7 +46,8 @@ group :production do
 end
 group :test do
   gem 'capybara'
+  gem 'poltergeist'
   gem 'database_cleaner'
   gem 'launchy'
-  gem 'selenium-webdriver'
+  gem 'shoulda'
 end

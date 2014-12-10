@@ -1,9 +1,9 @@
 FactoryGirl.define do
+
   factory :course do
-    name "MyString"
-classroom "MyString"
-block_id 1
-capacity 1
+    name {Faker::Lorem.word}
+    classroom {Faker::Number.digit}
+    capacity {Faker::Number.number(2)}
   end
 
 end

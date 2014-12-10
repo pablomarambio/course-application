@@ -1,5 +1,12 @@
-require 'rails_helper'
+describe Result do
 
-RSpec.describe Result, :type => :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) { @result = FactoryGirl.create :result }
+
+  subject { @result }
+
+
+  it {should belong_to :user}
+  it {should belong_to :course}
+  it {should belong_to :block}
+
 end

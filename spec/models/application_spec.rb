@@ -1,5 +1,15 @@
-require 'rails_helper'
+describe Application do
 
-RSpec.describe Application, :type => :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  before(:each) { @application = FactoryGirl.create :application }
+
+  subject { @application }
+
+  it { should respond_to(:priority) }
+
+  it {should validate_presence_of :priority}
+
+  it {should belong_to :user}
+  it {should belong_to :course}
+
+
 end
