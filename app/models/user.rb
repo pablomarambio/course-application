@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
   enum role: [:user, :vip, :admin]
   after_initialize :set_default_role, :if => :new_record?
-
-  validates :rut, uniqueness: true, presence: true
+  validates :rut, uniqueness: true, presence: true, numericality: true
   validates :name, presence: true
 
   belongs_to :course_batch
@@ -10,7 +9,6 @@ class User < ActiveRecord::Base
   def set_default_role
     self.role ||= :user
   end
-
 
 
   # Include default devise modules. Others available are:

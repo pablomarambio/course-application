@@ -1,0 +1,17 @@
+%table.table
+  %thead
+    %tr
+      - query.upmin_results.first.attributes.each do |attribute|
+        %th
+          = attribute.name
+      %th
+      %th
+  - query.upmin_results.each do |result|
+    %tr.upmin-model{class: result.color}
+      - result.attributes.each do |attribute|
+        %td
+          = attribute.value
+      %td
+        = link_to "Edit", result.path, class: "btn btn-primary btn-xs"
+      %td
+        = link_to("Delete",result.path, method: :delete, class: "btn btn-xs btn-danger delete delete_user_#{result.id}", title: "Delete #{result.title}.", data: {confirm: "Are you sure?"})

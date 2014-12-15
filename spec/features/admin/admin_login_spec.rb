@@ -1,26 +1,27 @@
-# feature 'Sign in', :devise do
+feature 'Admin panel', :devise do
 
-#   # Scenario: User cannot sign in if not registered
-#   #   Given I do not exist as a user
-#   #   When I sign in with valid credentials
-#   #   Then I see an invalid credentials message
-#   scenario 'user cannot sign in if not registered' do
-#     signin('test@example.com', 'please123')
-#     expect(page).to have_content I18n.t 'devise.failure.not_found_in_database', authentication_keys: 'email'
-#   end
+  #create admin
+  #login as admin
+  #admin can access /admin
 
+  scenario 'admin can sign in and access the admin panel' do
+    user = FactoryGirl.create(:user, :admin)
+    signin(user.email, user.password)
+    visit upmin_path
+    expect(page).to have_content "Upmin"
+    expect(current_path).to eq upmin_path
+  end
 
-#create admin
+  #create ordinary user
+  #login as user
+  #ordinary user can't access /admin
 
-#login as admin
+  scenario 'ordinary user cant access the admin panel' do
+    user = FactoryGirl.create(:user)
+    signin(user.email, user.password)
+    visit upmin_path
+    expect(page).to have_content "Access denied"
+    expect(current_path).to eq root_path
+  end
 
-#admin can access /admin
-
-
-#create ordinary user
-
-#login as user
-
-#ordinary user can't access /admin
-
-
+end

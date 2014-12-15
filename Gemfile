@@ -13,7 +13,7 @@ gem 'bootstrap-sass'
 gem 'devise'
 gem 'haml-rails'
 gem 'simple_form'
-gem 'upmin-admin'
+gem 'upmin-admin', git: "https://github.com/upmin/upmin-admin-ruby.git"
 
 group :development do
   gem 'better_errors'

@@ -34,4 +34,23 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+    # mailer
+    config.action_mailer.default_url_options = {host: 'localhost:3000'}
+    config.mailer_sender = 'no-reply@course-application.com'
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.asset_host = 'http://127.0.0.1:3000'
+    config.action_mailer.smtp_settings = {
+        address: 'localhost',
+        port: 1025,
+        domain: 'course-application',
+    }
+
+  if defined? BetterErrors
+    BetterErrors.editor = proc { |full_path, line|
+      local_path = "/Users/knx/Developer/Sites/course-application/"
+      full_path = full_path.sub(Rails.root.to_s, local_path)
+      "subl://open?url=file://#{full_path}&line=#{line}"
+    }
+  end
 end

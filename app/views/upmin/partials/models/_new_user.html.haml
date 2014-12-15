@@ -1,0 +1,44 @@
+.upmin-model{class: model.color}
+  %h3
+    Create a
+    = model.humanized_name(:singular)
+
+  %br
+  %br
+  %h3{style: "color: #333;"}
+    Attributes
+  %hr
+
+  .attributes
+    -# Yes this is meant to be model.model - this is the raw rails model instance.
+    = form_for(model, url: model.create_path, html: { method: :post }) do |f|
+
+      .form-group
+        = f.label :password, class: "control-label label-required"
+        = f.password_field :password, required: true, minlength:8,  class: 'form-control'
+
+      -# .form-group
+      -#   = f.label :name, class: "control-label label-required"
+      -#   = f.text_field :name, required: true, class: 'form-control'
+
+      -# .form-group
+      -#   = f.label :email, class: "control-label label-required"
+      -#   = f.email_field :email, required: true, class: 'form-control'
+
+      -# .form-group
+      -#   = f.label :rut, class: "control-label label-required"
+      -#   = f.text_field :rut, required: true, class: 'form-control'
+
+      -# .form-group
+      -#   = f.label :role, class: "control-label label-required"
+      -#   = f.radio_button :role, User.roles
+
+
+
+      -# Render each attribute
+      - model.attributes.each do |attribute|
+
+        = up_render(attribute, locals: { form_builder: f })
+
+      = f.submit("Create", class: "btn btn-primary")
+
