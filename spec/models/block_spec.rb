@@ -15,9 +15,15 @@ describe Block do
   it {should respond_to(:to)}
   it {should validate_presence_of :to}
 
-  it "should validate courses count to be greater than 0" do
+  it "has at least one course" do
     @block_without_courses = FactoryGirl.build(:block)
     expect(@block_without_courses.valid?).to eq false
+  end
+
+  it "can have multiple courses" do
+    @block.courses << FactoryGirl.create(:course)
+    @block.courses << FactoryGirl.create(:course)
+    expect(@block.courses.count).to eq 5
   end
 
 end

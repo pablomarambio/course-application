@@ -18,7 +18,61 @@ describe User do
   it {should define_enum_for :role}
 
   it {should belong_to :course_batch}
+  it {should have_many :applications}
+  it {should have_many :results}
 
-  it "student can be assigned to only one course in a block"
+  it "can be assigned to a course batch" do
+    @course_batch = FactoryGirl.create(:course_batch, :with_blocks)
+    @user.course_batch = @course_batch
+    @user.save
+    expect(@user.course_batch).to eq @course_batch
+  end
+
+  it "can have multiple applications" do
+    @user.applications << FactoryGirl.create(:application)
+    @user.applications << FactoryGirl.create(:application)
+    expect(@user.applications.count).to eq 2
+  end
+
+  # Number of students with completed applications, that is, students with N applications, where N is the number of courses contained within the student's course batch.
+  it "returns number of students with completed applications" do
+      #create student with N courses in batch
+      @test_user = FactoryGirl.create(:user, :with_batch)
+      #create N applications for all courses
+      @test_user.course_batch.blocks.each do |block|
+          block.courses.each_with_index do |course, index|
+              @test_user.applications << Application.create(course_id: course.id, priority: index)
+          end
+      end
+      #test the method
+      expect(User.with_completed_applications.count).to eq 1
+  end
+
+  # Number of students with incomplete applications, that is, students with more than 1 and less than N applications, where N is the number of courses contained within the student's course batch.
+  it "returns number of students with incomplete applications" do
+    #create student with N courses in batch
+    @test_user = FactoryGirl.create(:user, :with_batch)
+    #create N-1 applications for all courses
+    @test_user.course_batch.blocks.each do |block|
+        block.courses.each_with_index do |course, index|
+            @test_user.applications << Application.create(course_id: course.id, priority: index)
+        end
+        @test_user.applications.last.destroy
+    end
+    #test the method
+    expect(User.with_incompleted_applications.count).to eq 1
+  end
+
+  # Number of "idle students", that is, students that haven't submitted any application
+  it "returns number of students who are idle (zero applications)" do
+    @test_user = FactoryGirl.create(:user)
+    expect(User.idle.count).to eq 2
+  end
+
+  it "can be assigned to only one course in a block"
+    #create user with batch
+    #create result for a course in a block
+    #create result for another course in that block
+    #it should fail
 
 end
