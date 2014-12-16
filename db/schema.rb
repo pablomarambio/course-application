@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141210122300) do
+ActiveRecord::Schema.define(version: 20141216073244) do
 
   create_table "applications", force: true do |t|
     t.integer  "user_id"
@@ -50,6 +50,22 @@ ActiveRecord::Schema.define(version: 20141210122300) do
     t.integer  "user_id"
     t.integer  "course_id"
     t.integer  "block_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "upload_results", force: true do |t|
+    t.string   "message"
+    t.integer  "upload_id"
+    t.string   "result_type"
+    t.integer  "row_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "uploads", force: true do |t|
+    t.integer  "upload_type"
+    t.text     "file"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

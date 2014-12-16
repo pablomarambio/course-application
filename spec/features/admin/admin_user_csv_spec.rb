@@ -28,8 +28,39 @@ feature 'Admin for Users - CSV upload', :devise do
       Warden.test_reset!
     end
 
-  scenario 'admin can upload CSV file and create users'
+  scenario 'admin can upload CSV file and users are created' do
+    users_count = User.count
+    visit upmin_path
+    click_link "Upload students"
+    attach_file :upload_file, "spec/test_files/students.csv"
+    click_button "Upload"
+    #test csv file should create 4 users and remove 1
+    expect(User.count).to eq users_count+3
+  end
+
+  scenario 'CSV file upload displays results' do
+    visit upmin_path
+    click_link "Upload students"
+    attach_file :upload_file, "spec/test_files/students.csv"
+    click_button "Upload"
+    expect(current_path).to eq upload_path
+  end
+
+  scenario 'admin can upload CSV file and users are updated'
+  #setup users
+  #upload file
+  #test results (2 users should be updated)
+
+  scenario 'admin can upload CSV file and users are deleted'
+  #setup users
+  #upload file
+  #test results (2 users should be deleted)
 
   scenario 'CSV errors are detected and the rest of the file is processed'
+  #setup users
+  #upload file
+  #test result output
+  #page should contain information about 3 errors with details
+
 
 end

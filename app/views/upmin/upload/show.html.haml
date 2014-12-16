@@ -1,0 +1,29 @@
+.container
+  .row
+    .col-sm-12
+      %h3
+        Upload processing results
+      %table.table
+        %thead
+          %tr
+            %th
+              Row number
+            %th
+              Message
+            %th
+              Type
+        %tbody
+        - @upload.upload_results.each do |result|
+          - classes = "success" if result.result_type == "Success"
+          - classes = "danger" if result.result_type == "Error"
+          %tr{class: classes}
+            %td
+              = result.row_number+2
+            %td
+              = result.message
+            %td
+              =result.result_type
+
+      %p
+        = link_to "Dashboard", root_path, class: "btn btn-lg btn-primary"
+        = link_to "New upload", new_upload_path, class: "btn btn-lg btn-default"

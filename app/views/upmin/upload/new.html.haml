@@ -1,0 +1,15 @@
+.container
+  .row
+    .col-sm-12
+      %h3
+        Upload users CSV
+      %hr
+      .upload-form
+        = form_for(@upload, url: upload_index_path, html: { method: :post, multipart: true }) do |f|
+          .form-group
+            = f.label :file, class: "control-label label-required"
+            = f.file_field :file, required: true,  class: 'form-control'
+
+            = f.hidden_field :upload_type, value: "users"
+
+          = f.submit("Upload", class: "btn btn-primary")

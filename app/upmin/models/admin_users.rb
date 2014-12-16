@@ -20,5 +20,11 @@ class AdminUser < Upmin::Model
   #   model.password = password
   # end
 
+  # action :upload
+
+  # def self.upload(file)
+
+  # end
+
 
 end

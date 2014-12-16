@@ -26,6 +26,7 @@ feature 'Admin for Users', :devise do
   end
 
   scenario 'admin can create a new user' do
+    user_count = User.count
     visit "/admin/m/User/new"
     fill_in :user_password, with:"test1234"
     fill_in 'user_name', with:"Test User"
@@ -34,7 +35,7 @@ feature 'Admin for Users', :devise do
     choose 'User'
     click_button "Create"
     expect(page).to have_content "User created successfully"
-    expect(User.all.count).to eq 7
+    expect(User.count).to eq user_count + 1
   end
 
   scenario 'admin can edit user' do

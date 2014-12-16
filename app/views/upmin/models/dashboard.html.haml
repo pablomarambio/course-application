@@ -1,20 +1,20 @@
 .container
   .row
     .col-sm-4
-      %h3 Students with incomplete applications:
+      %h3 Incomplete applications:
       %h3.incompleted-count= User.with_incompleted_applications.count
     .col-sm-4
-      %h3 Students with complete applications:
+      %h3 Complete applications:
       %h3.completed-count= User.with_completed_applications.count
     .col-sm-4
       %h3 Idle students:
       %h3.idle-count= User.idle.count
   .row
+    %br/
     .col-sm-12
-      %h3 Useful links:
-      = link_to "Upload students", main_app.upload_students_path , class: "btn btn-primary"
-      = link_to "Upload courses", main_app.upload_courses_path , class: "btn btn-primary"
-      = link_to "Upload results", main_app.upload_results_path , class: "btn btn-primary"
-      = link_to "Download applications", main_app.download_applications_path , class: "btn btn-primary"
-      = link_to "Idle students", main_app.idle_students_path , class: "btn btn-primary"
-      = link_to "Incomplete applications", main_app.incomplete_applications_path , class: "btn btn-primary"
+      = link_to "Upload students", new_upload_path , class: "btn btn-primary"
+      = link_to "Upload courses", new_upload_path , class: "btn btn-primary"
+      = link_to "Upload results", new_upload_path , class: "btn btn-primary"
+      = link_to "Download applications", main_app.download_applications_path , class: "btn btn-info"
+      = link_to "Idle students", main_app.idle_students_path , class: "btn btn-info"
+      = link_to "Incomplete applications", main_app.incomplete_applications_path , class: "btn btn-info"

@@ -5,12 +5,16 @@
         %th
           = attribute.name
       %th
+        Batch
+      %th
       %th
   - query.upmin_results.each do |result|
     %tr.upmin-model{class: result.color}
       - result.attributes.each do |attribute|
         %td
           = attribute.value
+      %td
+        = result.course_batch_id
       %td
         = link_to "Edit", result.path, class: "btn btn-primary btn-xs"
       %td
