@@ -43,7 +43,7 @@ scenario 'idle students count' do
       #check the numbers
       visit upmin_path
       # count +1 because of user used to log in
-      expect(page).to have_css(".idle-count", text: test_users.count+1)
+      expect(page).to have_css(".idle-count", text: User.idle.count)
 end
 
 # The control panel is shown below the dashboard, and it shows a link to each of the

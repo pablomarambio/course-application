@@ -33,17 +33,17 @@ feature 'Admin for Courses - CSV upload', :devise do
       Warden.test_reset!
     end
 
-  # scenario 'admin can upload CSV file and users are created' do
-  #   users_count = User.count
-  #   visit upmin_path
-  #   click_link "Upload students"
-  #   attach_file :upload_file, "spec/test_files/students.csv"
-  #   click_button "Upload"
-  #   #test csv file should create 4 users and remove 1
-  #   expect(User.count).to eq users_count+3
-  # end
+  scenario 'admin can upload CSV file and courses are created' do
+    courses_count = Course.count
+    visit upmin_path
+    click_link "Upload courses"
+    attach_file :upload_file, "spec/test_files/courses.csv"
+    click_button "Upload"
+    #test csv file should create 4 courses and remove 1
+    expect(Course.count).to eq courses_count+3
+  end
 
-  # scenario 'CSV file upload displays results' do
+  scenario 'CSV file upload displays results'
   #   visit upmin_path
   #   click_link "Upload students"
   #   attach_file :upload_file, "spec/test_files/students.csv"
@@ -51,17 +51,17 @@ feature 'Admin for Courses - CSV upload', :devise do
   #   expect(current_path).to eq upload_path
   # end
 
-  # scenario 'admin can upload CSV file and users are updated'
+  scenario 'admin can upload CSV file and users are updated'
   # #setup users
   # #upload file
   # #test results (2 users should be updated)
 
-  # scenario 'admin can upload CSV file and users are deleted'
+  scenario 'admin can upload CSV file and users are deleted'
   # #setup users
   # #upload file
   # #test results (2 users should be deleted)
 
-  # scenario 'CSV errors are detected and the rest of the file is processed'
+  scenario 'CSV errors are detected and the rest of the file is processed'
   # #setup users
   # #upload file
   # #test result output

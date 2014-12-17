@@ -5,7 +5,8 @@ FactoryGirl.define do
 
     trait :with_blocks do
       after(:build) do |course_batch, eval|
-        course_batch.blocks << FactoryGirl.build_list(:block_with_courses, 2)
+        course_batch.blocks << FactoryGirl.build(:block_with_courses)
+        course_batch.blocks << FactoryGirl.build(:block_with_courses)
       end
     end
 

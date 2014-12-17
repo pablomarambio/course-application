@@ -38,13 +38,13 @@ feature 'Admin for Users - CSV upload', :devise do
     expect(User.count).to eq users_count+3
   end
 
-  scenario 'CSV file upload displays results' do
-    visit upmin_path
-    click_link "Upload students"
-    attach_file :upload_file, "spec/test_files/students.csv"
-    click_button "Upload"
-    expect(current_path).to eq upload_path
-  end
+  scenario 'CSV file upload displays results'
+  #   visit upmin_path
+  #   click_link "Upload students"
+  #   attach_file :upload_file, "spec/test_files/students.csv"
+  #   click_button "Upload"
+  #   expect(current_path).to eq new_upload_path(:users)
+  # end
 
   scenario 'admin can upload CSV file and users are updated'
   #setup users

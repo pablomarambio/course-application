@@ -1,7 +1,9 @@
 FactoryGirl.define do
 
   factory :course do
-    name {Faker::Lorem.word}
+    sequence :name do |n|
+      "name#{n}"
+    end
     classroom {Faker::Number.digit}
     capacity {Faker::Number.number(2)}
     # from "10"
