@@ -55,9 +55,9 @@ end
 #/public/incomplete-applications
 scenario 'control panel links' do
   visit upmin_path
-  expect(page).to have_link("Upload students", :href=>"/admin/upload/new")
-  expect(page).to have_link("Upload courses", :href=>"/admin/upload/new")
-  expect(page).to have_link("Upload results", :href=>"/admin/upload/new")
+  expect(page).to have_link("Upload students", :href=>"/admin/upload/new/users")
+  expect(page).to have_link("Upload courses", :href=>"/admin/upload/new/courses")
+  expect(page).to have_link("Upload results", :href=>"/admin/upload/new/results")
   expect(page).to have_link("Download applications", :href=>"/admin/applications/download")
   expect(page).to have_link("Idle students", :href=>"/students/idle")
   expect(page).to have_link("Incomplete applications", :href=>"/applications/incomplete")

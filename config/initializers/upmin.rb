@@ -25,5 +25,5 @@ end
 Upmin::ApplicationController.send :include, AdminOnly
 
 Upmin.configure do |config|
-  config.models = [:user]
+  config.models = [:user, :course]
 end

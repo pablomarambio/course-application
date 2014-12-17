@@ -4,8 +4,6 @@ Rails.application.routes.draw do
 
   devise_for :users, :skip => :registrations
 
-  get "/admin/courses/upload", as: "upload_courses"
-  get "/admin/results/upload", as: "upload_results"
   get "/admin/applications/download", as: "download_applications"
   get "/applications/incomplete", as: "incomplete_applications"
   get "/students/idle", as: "idle_students"
@@ -13,7 +11,8 @@ Rails.application.routes.draw do
   mount Upmin::Engine => '/admin'
 
   Upmin::Engine.routes.draw do
-    resources :upload, only:[:new, :create, :show]
+    resources :upload, only:[:create, :show]
+    get "/upload/new/:type" => "upload#new", as: "new_upload"
   end
 
 end

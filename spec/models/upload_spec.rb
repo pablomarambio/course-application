@@ -78,20 +78,130 @@ describe Upload do
 
   context "courses upload" do
 
-    it "should read CSV file and split it into rows"
+    before (:each) { @courses_upload = FactoryGirl.create(:upload, :courses)}
 
-    it "should create course from CSV row without id"
+    subject {@courses_upload}
 
-    it "should delete course from CSV row with only id"
+    it "should read CSV file and split it into rows" do
+      expect(subject.rows.count).to eq 9
+    end
 
-    it "should update course from CSV row with id"
+    it "should create course from CSV row without id and find/update or create batch and block" do
+      #Creates the course "Maths". If the batch "elementary" doesn't exist, it creates it. If the block "morning" doesn't exist,
+      # it creates it and it assigns it from=10:00, to=11:30. It then assigns the block to the batch if it wasn't assigned to it already.
+      #It then assigns the course to the block.
+      subject.process_row(1)
+      expect(subject.upload_results[0].message).to eq "Course created"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+      @test_course= Course.last
+      expect(@test_course.nil?).to eq false
+      expect(@test_course.name).to eq "Maths"
+      expect(@test_course.block.name).to eq "morning"
+      expect(@test_course.block.to).to eq "2000-01-01 11:30:00.000000000 +0000"
+      expect(@test_course.block.from).to eq "2000-01-01 10:00:00.000000000 +0000"
+      expect(@test_course.course_batch.name).to eq "elementary"
+      expect(@test_course.classroom).to eq "2"
+      expect(@test_course.capacity).to eq 23
+      expect(@test_course.course_batch.blocks).to include @test_course.block
+    end
 
-    it "should return error for a row with blanks"
+    it "should create course and assign it to the block" do
+      #Creates the course "Kitchen physiscs". It then assigns the course to the block "morning"
+      subject.process_row(2)
+      expect(subject.upload_results[0].message).to eq "Course created"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+      @test_course= Course.last
+      expect(@test_course.nil?).to eq false
+      expect(@test_course.name).to eq "Kitchen physiscs"
+      expect(@test_course.block.name).to eq "morning"
+      expect(@test_course.block.to).to eq "2000-01-01 11:30:00.000000000 +0000"
+      expect(@test_course.block.from).to eq "2000-01-01 10:00:00.000000000 +0000"
+      expect(@test_course.course_batch.name).to eq "elementary"
+      expect(@test_course.classroom).to eq "3"
+      expect(@test_course.capacity).to eq 42
+      expect(@test_course.course_batch.blocks).to include @test_course.block
+    end
 
-    it "should return error for a row for non unique name"
+    it "should create course and assign it to the block" do
+      #Creates the course "Videogame programming".
+      #If the block "afternoon" doesn't exist, it creates it and it assigns it from=15:00, to=16:30.
+      #It then assigns the block to the batch if it wasn't assigned to it already.
+      #It then assigns the course to the block "afternoon".
+      subject.process_row(3)
+      expect(subject.upload_results[0].message).to eq "Course created"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+      @test_course= Course.last
+      expect(@test_course.nil?).to eq false
+      expect(@test_course.name).to eq "Videogame programming"
+      expect(@test_course.block.name).to eq "afternoon"
+      expect(@test_course.block.to).to eq "2000-01-01 16:30:00.000000000 +0000"
+      expect(@test_course.block.from).to eq "2000-01-01 15:00:00.000000000 +0000"
+      expect(@test_course.course_batch.name).to eq "elementary"
+      expect(@test_course.classroom).to eq "4"
+      expect(@test_course.capacity).to eq 23
+      expect(@test_course.course_batch.blocks).to include @test_course.block
+    end
 
-    it "should return error for a row with non existent ID when deleting"
+    it "should update course from CSV row with id" do
+      #It updates Course ID=222, assigning it a new name: "How to poo".
+      #It then creates batch and block if they didn't exist before.
+      #If the block existed, it is assigned a new "from" and "to" time.
+      #The it assigns the block to the batch if it wasn't already assigned,
+      #and the course to the block if it wasn't already assigned.
+      @test_course = FactoryGirl.create(:course, id: 222, name: "CHANGEME")
+      @test_block = FactoryGirl.create(:block_with_courses, name: "early hours")
+      subject.process_row(4)
+      expect(@test_course.reload.name).to eq "How to poo"
+      expect(@test_course.reload.block.name).to eq "early hours"
+      expect(@test_course.reload.block.to).to eq "2000-01-01 07:30:00.000000000 +0000"
+      expect(@test_course.reload.block.from).to eq "2000-01-01 06:00:00.000000000 +0000"
+      expect(@test_course.reload.course_batch.blocks).to include @test_course.block
+    end
 
+    it "should delete course from CSV row with only id and its applications and results" do
+      @test_course = FactoryGirl.create(:course, id: 223)
+      @test_course.applications << FactoryGirl.create_list(:application, 3)
+      @test_course.results << FactoryGirl.create_list(:result, 3)
+      subject.process_row(5)
+      expect(Course.where(id:223).blank?).to eq true
+      expect(Application.count).to eq 0
+      expect(Result.count).to eq 0
+    end
+
+
+
+    #Error: cannot update because block and batch are blank.
+    it "should return error when batch name is blank" do
+      @test_course = FactoryGirl.create(:course, id: 224, name: "CHANGEME")
+      subject.process_row(6)
+      expect(@test_course.reload.name).to eq "CHANGEME"
+      expect(subject.upload_results[0].message).to eq "Blocks is invalid and Name can't be blank"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
+
+    #Error: cannot update because block is blank.
+    it "should return error when block name is blank" do
+      @test_course = FactoryGirl.create(:course, id: 225, name: "CHANGEME")
+      subject.process_row(7)
+      expect(@test_course.reload.name).to eq "CHANGEME"
+      expect(subject.upload_results[0].message).to eq "Blocks is invalid"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
+
+    #Error: cannot create because course name is blank
+    it "should return error when course name is blank" do
+      subject.process_row(8)
+      expect(subject.upload_results[0].message).to eq "Name can't be blank, Classroom can't be blank, and Capacity can't be blank"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
+
+    #Error: cannot create because course name is already taken
+    it "should return error when course name is taken" do
+      @test_course = FactoryGirl.create(:course, name: "Videogame programming")
+      subject.process_row(9)
+      expect(subject.upload_results[0].message).to eq "Name has already been taken"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
 
   end
 

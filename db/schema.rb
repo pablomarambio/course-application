@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141216073244) do
+ActiveRecord::Schema.define(version: 20141217063602) do
 
   create_table "applications", force: true do |t|
     t.integer  "user_id"
@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 20141216073244) do
     t.integer  "capacity"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "from"
+    t.string   "to"
+    t.integer  "course_batch_id"
   end
 
   create_table "results", force: true do |t|

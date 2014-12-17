@@ -26,4 +26,4 @@
 
       %p
         = link_to "Dashboard", root_path, class: "btn btn-lg btn-primary"
-        = link_to "New upload", new_upload_path, class: "btn btn-lg btn-default"
+        = link_to "New upload", new_upload_path(@upload.upload_type), class: "btn btn-lg btn-default"
