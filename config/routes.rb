@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'apply/:batch/:block' => 'apply#new', as: "apply"
+
   get 'public/index' => 'public#index'
   get 'public/students/idle' => 'public#idle_students', as: "idle_students"
   get 'public/applications/incomplete' => 'public#incomplete_applications', as: "incomplete_applications"
