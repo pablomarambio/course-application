@@ -2,3 +2,20 @@
   .row
     .col-md-12
       %h3 Idle students
+      %table.table
+        %thead
+          %tr
+            %th
+              RUT
+            %th
+              Name
+            %th
+              Logins
+            %th
+              Last login
+        - @idle_students.each do |student|
+          %tr.idle-students-row{id:"idle-student-row-#{student.id}"}
+            %td= student.rut
+            %td= student.name
+            %td= student.sign_in_count
+            %td= student.last_sign_in_at

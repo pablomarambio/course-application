@@ -2,3 +2,34 @@
   .row
     .col-md-12
       %h3 Available courses
+      %table.table
+        %thead
+          %tr
+            %th
+              Name
+            %th
+              Classroom
+            %th
+              Capacity
+            %th
+              Assigned students
+            %th
+              From
+            %th
+              To
+          - @course_batches.each do |batch|
+            - batch.blocks.each do |block|
+              - block.courses.each do |course|
+                %tr.available-course-row{id: "available-course-#{course.id}"}
+                  %td
+                    = course.name
+                  %td
+                    = course.classroom
+                  %td
+                    =course.capacity
+                  %td
+                    =course.block.course_batch.users.count
+                  %td
+                    = course.block.from.strftime("%H:%M")
+                  %td
+                    = course.block.to.strftime("%H:%M")

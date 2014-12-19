@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'batches/:id/toggle' => 'batches#toggle', as: "batch_toggle"
+
   get 'apply/:batch/:block' => 'apply#new', as: "apply"
 
   get 'public/index' => 'public#index'

@@ -34,6 +34,7 @@ feature 'Navigation links', :devise do
   scenario 'view admin link' do
     user = FactoryGirl.create(:user, :admin)
     signin(user.email, user.password)
+    visit root_path
     expect(page).to have_content 'Admin'
   end
 

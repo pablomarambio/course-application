@@ -11,9 +11,13 @@ class ApplicationController < ActionController::Base
       if resource.admin?
         upmin_path
       else
-        batch = resource.course_batch
-        block = batch.blocks.first
-        apply_path(batch.id, block.id)
+        if resource.course_batch.nil?
+          root_path
+        else
+          batch = resource.course_batch
+          block = batch.blocks.first
+          apply_path(batch.id, block.id)
+        end
       end
   end
 

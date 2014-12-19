@@ -1,5 +1,5 @@
 class CourseBatch < ActiveRecord::Base
-  # has_one :student
+  has_many :users
   has_many :blocks
 
   validates :name, presence: true
@@ -15,6 +15,10 @@ class CourseBatch < ActiveRecord::Base
 
   def validate_blocks_count
     errors.add(:blocks, "count must be at least one.") if blocks.size < 1
+  end
+
+  def courses
+    blocks.collect{|b| b.courses}.flatten
   end
 
 

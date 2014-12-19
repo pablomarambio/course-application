@@ -2,3 +2,33 @@
   .row
     .col-md-12
       %h3 Batches
+      %table.table
+        %thead
+          %tr
+            %th
+              Name
+            %th
+              Number of blocks
+            %th
+              Number of courses
+            %th
+              Status
+            %th
+          - @course_batches.each do |batch|
+            %tr.batches-row{id: "batch-row-#{batch.id}"}
+              %td
+                = batch.name
+              %td
+                = batch.blocks.count
+              %td
+                = batch.courses.count
+              %td
+                - if batch.open_status
+                  %span{class:"label label-success"}
+                    Open
+                -else
+                  %span{class:"label label-danger"}
+                    Closed
+              %td
+                - if (user_signed_in? && current_user.admin?)
+                  = link_to "Toggle", batch_toggle_path(batch.id), class: "btn btn-xs btn-default"

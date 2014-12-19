@@ -8,9 +8,20 @@ describe CourseBatch do
 
   it {should validate_presence_of :name}
 
+  it {should have_many :users}
+
+  it {should respond_to :courses}
+
+  it {should respond_to :status}
+
+  it ".courses should return courses for all blocks" do
+    expect(subject.courses).to eq subject.blocks.collect{|b| b.courses}.flatten
+  end
+
+
 
   it "has open_status set to true" do
-    expect(@course_batch.open_status).to eq true
+    expect(subject.open_status).to eq true
   end
 
   it "has at least one block" do
@@ -19,9 +30,9 @@ describe CourseBatch do
   end
 
   it "can have multiple blocks" do
-    @course_batch.blocks << FactoryGirl.create(:block_with_courses)
-    @course_batch.blocks << FactoryGirl.create(:block_with_courses)
-    expect(@course_batch.blocks.count).to eq 4
+    subject.blocks << FactoryGirl.create(:block_with_courses)
+    subject.blocks << FactoryGirl.create(:block_with_courses)
+    expect(subject.blocks.count).to eq 4
   end
 
 end

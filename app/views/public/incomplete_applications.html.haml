@@ -2,3 +2,20 @@
   .row
     .col-md-12
       %h3 Incomplete applications
+      %table.table
+        %thead
+          %tr
+            %th
+              RUT
+            %th
+              Name
+            %th
+              Logins
+            %th
+              Last login
+        - @incomplete_applications_students.each do |student|
+          %tr.incompleted-applications-students-row{id:"incompleted-applications-student-row-#{student.id}"}
+            %td= student.rut
+            %td= student.name
+            %td= student.sign_in_count
+            %td= student.last_sign_in_at
