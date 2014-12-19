@@ -8,10 +8,12 @@ class User < ActiveRecord::Base
   has_many :applications
   has_many :results
 
+  attr_accessor :login
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable, :registerable
   devise :database_authenticatable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :authentication_keys => [:login]
 
  def set_default_role
    self.role ||= :user
@@ -38,5 +40,14 @@ class User < ActiveRecord::Base
  def self.idle
     User.all.select{|user| user.applications.count == 0}
  end
+
+ def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login)
+      where(conditions).where(["lower(rut) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    else
+      where(conditions).first
+    end
+end
 
 end

@@ -7,6 +7,8 @@ describe User do
   it { should respond_to(:email) }
   it { should respond_to(:name) }
   it { should respond_to(:rut) }
+  it { should respond_to(:login)}
+  it { should respond_to(:login=)}
 
   it {should validate_presence_of :email}
   it {should validate_presence_of :name}

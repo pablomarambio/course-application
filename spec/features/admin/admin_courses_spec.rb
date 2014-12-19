@@ -32,8 +32,6 @@ feature 'Admin for Courses', :devise do
     fill_in :course_classroom, with:"test1234"
     fill_in :course_block_id, with:"1"
     fill_in :course_capacity, with:"12"
-    fill_in :course_to, with:"12"
-    fill_in :course_from, with:"13"
     click_button "Create"
     expect(page).to have_content "Course created successfully"
     expect(Course.count).to eq course_count + 1

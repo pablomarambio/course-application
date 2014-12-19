@@ -58,9 +58,9 @@ scenario 'control panel links' do
   expect(page).to have_link("Upload students", :href=>"/admin/upload/new/users")
   expect(page).to have_link("Upload courses", :href=>"/admin/upload/new/courses")
   expect(page).to have_link("Upload results", :href=>"/admin/upload/new/results")
-  expect(page).to have_link("Download applications", :href=>"/admin/applications/download")
-  expect(page).to have_link("Idle students", :href=>"/students/idle")
-  expect(page).to have_link("Incomplete applications", :href=>"/applications/incomplete")
+  expect(page).to have_link("Download applications", :href=>"/admin/downolad/applications")
+  expect(page).to have_link("Idle students", :href=>"/public/students/idle")
+  expect(page).to have_link("Incomplete applications", :href=>"/public/applications/incomplete")
 end
 
 

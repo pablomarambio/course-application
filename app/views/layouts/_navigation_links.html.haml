@@ -1,3 +1,7 @@
+%li= link_to 'Idle students', idle_students_path
+%li= link_to 'Incomplete applications', incomplete_applications_path
+%li= link_to 'Available courses', available_courses_path
+%li= link_to 'Batches', batches_path
 - if user_signed_in?
   %li= link_to 'Admin', upmin_path if current_user.admin?
   %li= link_to 'Sign out', destroy_user_session_path, :method=>'delete'
