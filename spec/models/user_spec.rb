@@ -9,6 +9,8 @@ describe User do
   it { should respond_to(:rut) }
   it { should respond_to(:login)}
   it { should respond_to(:login=)}
+  it {should respond_to(:applications_for_block)}
+  it {should respond_to(:switch_applications)}
 
   it {should validate_presence_of :email}
   it {should validate_presence_of :name}
@@ -69,6 +71,41 @@ describe User do
   it "returns number of students who are idle (zero applications)" do
     @test_user = FactoryGirl.create(:user)
     expect(User.idle.count).to eq 2
+  end
+
+  it "returns array of aplications, for given block, sorted by priority" do
+    @test_user = FactoryGirl.create(:user, :with_batch)
+    @block = @test_user.course_batch.blocks.first
+    @applications = @test_user.applications_for_block(@block)
+    @applications_for_block = []
+    @block.courses.each do |course|
+        @applications_for_block << Application.where(user_id:@test_user.id, course_id: course.id).first
+    end
+    expect(@applications).to eq @applications_for_block
+    expect(@applications.first.priority).to eq 1
+    expect(@applications.last.priority).to eq @applications.count
+  end
+
+  it "moves application up in the array of applications" do
+    @test_user = FactoryGirl.create(:user, :with_batch)
+    @block = @test_user.course_batch.blocks.first
+    @applications = @test_user.applications_for_block(@block)
+    @application1 = @applications.first
+    @application2 = @applications.second
+    @test_user.switch_applications(@application2, @application1)
+    expect(@application2.reload.priority).to eq 1
+    expect(@application1.reload.priority).to eq 2
+  end
+
+  it "moves application down in the array of applications" do
+    @test_user = FactoryGirl.create(:user, :with_batch)
+    @block = @test_user.course_batch.blocks.first
+    @applications = @test_user.applications_for_block(@block)
+    @application1 = @applications.first
+    @application2 = @applications.second
+    @test_user.switch_applications(@application1, @application2)
+    expect(@application2.reload.priority).to eq 1
+    expect(@application1.reload.priority).to eq 2
   end
 
   it "can be assigned to only one course in a block"

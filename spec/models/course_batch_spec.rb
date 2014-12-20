@@ -12,7 +12,7 @@ describe CourseBatch do
 
   it {should respond_to :courses}
 
-  it {should respond_to :status}
+  it {should respond_to :open_status}
 
   it ".courses should return courses for all blocks" do
     expect(subject.courses).to eq subject.blocks.collect{|b| b.courses}.flatten

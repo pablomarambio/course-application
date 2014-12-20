@@ -1,16 +1,16 @@
 feature 'Public interface', :devise do
 
   scenario "User can sign in using rut" do
-  #create user
-  @user = FactoryGirl.create :user, :with_batch
-  #go to login page
-  visit new_user_session_path
-  #login using rut
-  fill_in "user_login", with: @user.rut
-  fill_in "user_password", with: @user.password
-  click_button "Sign in"
-  #expect to be logged in
-  expect(page).to have_content "Signed in successfully"
+    #create user
+    @user = FactoryGirl.create :user, :with_batch
+    #go to login page
+    visit new_user_session_path
+    #login using rut
+    fill_in "user_login", with: @user.rut
+    fill_in "user_password", with: @user.password
+    click_button "Sign in"
+    #expect to be logged in
+    expect(page).to have_content "Signed in successfully"
   end
 
   scenario "shows link to each other public page" do
@@ -73,8 +73,8 @@ feature 'Public interface', :devise do
 
     scenario "each row shows from and to" do
       within("#available-course-#{@course_batches.first.courses.first.id}") do
-        expect(page).to have_content @course_batches.first.courses.first.block.to
-        expect(page).to have_content @course_batches.first.courses.first.block.from
+        expect(page).to have_content @course_batches.first.courses.first.block.to.strftime("%H:%M")
+        expect(page).to have_content @course_batches.first.courses.first.block.from.strftime("%H:%M")
       end
     end
 

@@ -50,4 +50,38 @@ class User < ActiveRecord::Base
     end
 end
 
+
+
+def applications_for_block(block)
+  @applications = []
+
+  block.courses.each do |course|
+
+    @application = Application.where(user_id: self.id, course_id: course.id).first
+    if @application
+      @applications << @application
+    else
+      @applications << Application.create(user_id: self.id, course_id: course.id, priority: @applications.count+1)
+    end
+
+    @applications.sort!{|a,b| a.priority <=> b.priority}
+
+    # @applications.each do |application|
+    #   application.priority = @applications.index(application)+1
+    #   application.save
+    # end
+  end
+  @applications
+
+end
+
+def switch_applications(application1, application2)
+  priority1 = application1.priority
+  priority2 = application2.priority
+  application1.priority = priority2
+  application2.priority = priority1
+  application1.save
+  application2.save
+end
+
 end

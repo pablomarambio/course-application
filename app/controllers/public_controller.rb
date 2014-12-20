@@ -1,5 +1,9 @@
 class PublicController < ApplicationController
   def index
+        unless current_user.course_batch.nil?
+          @batch = current_user.course_batch
+          @block = @batch.blocks.first
+        end
   end
 
   def idle_students

@@ -1,0 +1,8 @@
+%li.list-group-item.text-center{id:"application-#{application.id}-#{application.priority}"}
+  = application.course.name
+  - unless @applications.index(application) == 0
+    = link_to up_path(@block,application.id), class:"btn btn-default ", id:"up-#{application.id}" do
+      %span.glyphicon.glyphicon-circle-arrow-up
+  - unless @applications.index(application) == @applications.count-1
+    = link_to down_path(@block,application.id), class:"btn btn-default ", id:"down-#{application.id}" do
+      %span.glyphicon.glyphicon-circle-arrow-down

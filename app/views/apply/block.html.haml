@@ -1,0 +1,8 @@
+.container
+  .row
+    .col-md-12
+      %h3
+        = @block.name + " (#{@block.from.strftime("%H:%M")} - #{@block.to.strftime("%H:%M")})"
+        %ul.list-group
+        - @applications.each do |application|
+          = render partial: "application", object: application
