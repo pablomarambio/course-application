@@ -1,6 +1,6 @@
 class PublicController < ApplicationController
   def index
-        unless current_user.course_batch.nil?
+        if user_signed_in? && !current_user.course_batch.nil?
           @batch = current_user.course_batch
           @block = @batch.blocks.first
         end
