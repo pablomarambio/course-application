@@ -16,6 +16,10 @@ class ApplyController < ApplicationController
 
     @applications = current_user.applications_for_block(@block)
 
+    unless (@block == @batch.blocks.last) && (@batch.blocks.count > 1)
+      @next_block = @batch.blocks[@batch.blocks.index(@block)+1]
+    end
+
   end
 
   def up
@@ -40,6 +44,9 @@ class ApplyController < ApplicationController
     application2 = applications[applications.index(application1) + 1]
     current_user.switch_applications(application1, application2)
     redirect_to apply_path(batch.id, block.id)
+  end
+
+  def summary
   end
 
 end

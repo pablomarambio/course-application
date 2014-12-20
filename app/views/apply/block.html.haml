@@ -3,6 +3,16 @@
     .col-md-12
       %h3
         = @block.name + " (#{@block.from.strftime("%H:%M")} - #{@block.to.strftime("%H:%M")})"
+      - unless @block.open_status
+        .alert.alert-danger
+          This block is closed.
+      - else
         %ul.list-group
         - @applications.each do |application|
           = render partial: "application", object: application
+      %hr
+      - unless @next_block.nil?
+        = link_to "Next block",  apply_path(@batch.id, @next_block), class: "btn btn-primary"
+      - else
+        = link_to "Summary",  summary_path, class: "btn btn-info"
+

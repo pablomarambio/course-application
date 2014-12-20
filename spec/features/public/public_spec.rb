@@ -1,4 +1,12 @@
+include Warden::Test::Helpers
+Warden.test_mode!
+
 feature 'Public interface', :devise do
+
+  after(:each) do
+    Warden.test_reset!
+  end
+
 
   scenario "User can sign in using rut" do
     #create user
@@ -30,6 +38,7 @@ feature 'Public interface', :devise do
   end
 
   scenario "idle students page shows llst of students" do
+    User.destroy_all
     @users = FactoryGirl.create_list(:user,5, :with_batch)
     visit idle_students_path
     expect(all(".idle-students-row").count).to eq 5

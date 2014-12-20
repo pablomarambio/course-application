@@ -1,0 +1,27 @@
+.container
+  .row
+    .col-md-12
+      %h3
+        Course preferences summary
+      %table.table
+        %thead
+          %tr
+            %th
+              Block
+            %th
+              Course
+            %th
+              Priority
+            %th
+        - current_user.applications.each do |application|
+          %tr.application-row{id:"application-row-#{application.id}"}
+            %td= application.course.block.name
+            %td= application.course.name
+            %td
+              - if application.priority == 1
+                %strong
+                  = application.priority
+              - else
+                = application.priority
+            %td
+              = link_to "Change", apply_path(current_user.course_batch, application.course.block), class: "btn btn-xs btn-primary"

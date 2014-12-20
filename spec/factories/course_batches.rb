@@ -6,6 +6,7 @@ FactoryGirl.define do
       after(:build) do |course_batch, eval|
         course_batch.blocks << FactoryGirl.build(:block_with_courses)
         course_batch.blocks << FactoryGirl.build(:block_with_courses)
+        course_batch.blocks << FactoryGirl.build(:block_with_courses)
       end
     end
 

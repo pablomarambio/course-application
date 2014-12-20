@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get 'apply/:batch/:block' => 'apply#block', as: "apply"
   get 'apply/:block/:application/up' => 'apply#up', as: "up"
   get 'apply/:block/:application/down' => 'apply#down', as: "down"
+  get 'apply/summary', as: "summary"
 
   get 'public/index' => 'public#index'
   get 'public/students/idle' => 'public#idle_students', as: "idle_students"
