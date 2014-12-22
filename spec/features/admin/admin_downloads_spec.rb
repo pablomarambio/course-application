@@ -5,6 +5,8 @@ require 'csv'
 feature 'Admin - Downloads', :devise do
 
     before(:all) do
+      User.destroy_all
+      Course.destroy_all
       @user = FactoryGirl.create(:user, :admin)
       # generate some students with applications
       @students = FactoryGirl.create_list(:user, 5, :completed_application)
@@ -36,5 +38,61 @@ feature 'Admin - Downloads', :devise do
       end
 
     end
+
+    context "users" do
+
+      before(:each) do
+        login_as(@user, :scope => :user)
+        visit upmin.download_users_path
+        @csv = CSV.parse(page.body, {col_sep: ';'})
+      end
+
+      after(:each) do
+        Warden.test_reset!
+      end
+
+      scenario "should allow an admin to download users CSV file" do
+        expect(@csv.length).to eq User.count+1
+      end
+
+      scenario "dowloaded CSV has all the required columns" do
+        expect(@csv.first).to eq ["ID","Email","Name","RUT","Password","Course_Batch"]
+      end
+
+      scenario "downloaded CSV has correct data" do
+        @user = User.first
+        expect(@csv[1]).to eq [@user.id.to_s, @user.email.to_s, @user.name.to_s, @user.rut.to_s, nil, @user.course_batch_id ,nil]
+      end
+
+    end
+
+    context "courses" do
+
+      before(:each) do
+        login_as(@user, :scope => :user)
+        visit upmin.download_courses_path
+        @csv = CSV.parse(page.body, {col_sep: ';'})
+      end
+
+      after(:each) do
+        Warden.test_reset!
+      end
+
+      scenario "should allow an admin to download courses CSV file" do
+        expect(@csv.length).to eq Course.count+1
+      end
+
+      scenario "dowloaded CSV has all the required columns" do
+        expect(@csv.first).to eq ["ID","Name","Batch","Block","From","To","Classroom","Capacity"]
+      end
+
+      scenario "downloaded CSV has correct data" do
+        @course = Course.first
+        expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.try(:from).to_s, @course.block.try(:to).to_s,  @course.classroom.to_s , @course.capacity.to_s,"\n"]
+      end
+
+    end
+
+
 
 end

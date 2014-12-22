@@ -4,6 +4,7 @@ Warden.test_mode!
 feature 'Admin for Users', :devise do
 
   before(:all) do
+    User.destroy_all
     @user = FactoryGirl.create(:user, :admin)
     @users =FactoryGirl.create_list(:user,5)
   end
@@ -54,6 +55,8 @@ feature 'Admin for Users', :devise do
     expect(current_path).to eq "/admin/m/User"
     expect(page).to_not have_content test_user.name
   end
+
+  scenario "there is a button to download users CSV export"
 
 end
 

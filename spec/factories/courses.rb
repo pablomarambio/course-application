@@ -6,8 +6,8 @@ FactoryGirl.define do
     end
     classroom {Faker::Number.digit}
     capacity {Faker::Number.number(2)}
-    # from "10"
-    # to "12"
+    course_batch_id 1
+
   end
 
 end

@@ -17,7 +17,8 @@ Warden.test_mode!
 feature 'Admin for Users - CSV upload', :devise do
 
     before(:all) do
-      @user = FactoryGirl.create(:user, :admin)
+      User.destroy_all
+      @user = FactoryGirl.create(:user, :admin, id: 10)
     end
 
     before(:each) do
@@ -29,13 +30,12 @@ feature 'Admin for Users - CSV upload', :devise do
     end
 
   scenario 'admin can upload CSV file and users are created' do
-    users_count = User.count
     visit upmin_path
     click_link "Upload students"
     attach_file :upload_file, "spec/test_files/students.csv"
     click_button "Upload"
-    #test csv file should create 4 users and remove 1
-    expect(User.count).to eq users_count+3
+    #test csv file should create 4 users
+    expect(User.count).to eq 5
   end
 
   scenario 'CSV file upload displays results'

@@ -114,4 +114,28 @@ describe User do
     #create result for another course in that block
     #it should fail
 
+
+    context "csv export" do
+      subject { FactoryGirl.create_list(:user, 5) }
+
+      it { should respond_to(:to_csv) }
+
+      it "should generate correct nuber of rows" do
+        @csv = CSV.parse(User.to_csv, {col_sep: ';'})
+        expect(@csv.length).to eq User.count + 1
+      end
+
+      it "should generate correct headers" do
+        @csv = CSV.parse(User.to_csv, {col_sep: ';'})
+        expect(@csv.first).to eq ["ID","Email","Name","RUT","Password","Course_Batch"]
+      end
+
+      it "should generate correct data" do
+        @csv = CSV.parse(User.to_csv, {col_sep: ';'})
+        expect(@csv[1]).to eq [@user.id.to_s, @user.email.to_s, @user.name.to_s, @user.rut.to_s, nil, @user.course_batch_id ,nil]
+      end
+
+
+    end
+
 end

@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   Upmin::Engine.routes.draw do
     resources :upload, only:[:create, :show]
     get "/downolad/applications" => "download#applications", as: "download_applications"
+    get "/downolad/users" => "download#users", as: "download_users"
+    get "/downolad/courses" => "download#courses", as: "download_courses"
     get "/upload/new/:type" => "upload#new", as: "new_upload"
   end
 

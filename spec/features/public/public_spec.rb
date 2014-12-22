@@ -7,6 +7,11 @@ feature 'Public interface', :devise do
     Warden.test_reset!
   end
 
+  before(:all) do
+    Course.destroy_all
+    CourseBatch.destroy_all
+  end
+
 
   scenario "User can sign in using rut" do
     #create user

@@ -1,4 +1,5 @@
 class BatchesController < ApplicationController
+  before_filter :authenticate_user!
   def toggle
     @course_batch = CourseBatch.find(params[:id])
     @course_batch.open_status = !@course_batch.open_status

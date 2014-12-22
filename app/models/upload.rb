@@ -11,6 +11,10 @@ class Upload < ActiveRecord::Base
   attr_accessor :rows
   has_many :upload_results
 
+  #user columns ["ID","Email","Name","RUT","Password","Course_Batch"]
+  #course columns ["ID","Name","Batch","Block","From","To","Classroom","Capacity"]
+
+
   def read_rows
     self.rows = []
     CSV.parse(file, {headers: true, col_sep: ';' }) do |row|
