@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'public/applications/incomplete' => 'public#incomplete_applications', as: "incomplete_applications"
   get 'public/courses/available' => 'public#available_courses', as: "available_courses"
   get 'public/batches' => 'public#batches', as: "batches"
+  get 'public/results' => 'public#results', as: "results"
 
   root to: 'public#index'
 

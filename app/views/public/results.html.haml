@@ -1,0 +1,18 @@
+.container
+  .row
+    .col-md-12
+      %h3 Results
+      %table.table
+        %thead
+          %tr
+            %th
+              Student
+            %th
+              Course
+            %th
+              Block
+        - @results.each do |result|
+          %tr.results-row{id:"result-row-#{result.id}"}
+            %td= result.user.try(:name)
+            %td= result.course.try(:name)
+            %td= result.course.try(:block)

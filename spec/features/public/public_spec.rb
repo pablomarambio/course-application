@@ -12,7 +12,6 @@ feature 'Public interface', :devise do
     CourseBatch.destroy_all
   end
 
-
   scenario "User can sign in using rut" do
     #create user
     @user = FactoryGirl.create :user, :with_batch
@@ -38,6 +37,8 @@ feature 'Public interface', :devise do
    expect(page).to have_link("Available courses", :href=>"/public/courses/available")
    #batches
    expect(page).to have_link("Batches", :href=>"/public/batches")
+   #results
+   expect(page).to have_link("Results", :href=>"/public/results")
    #sign in
    expect(page).to have_link("Sign in", :href=>"/users/sign_in")
   end
@@ -123,6 +124,39 @@ feature 'Public interface', :devise do
         expect(page).to have_content "Open"
       end
     end
+
+  end
+
+  context "results" do
+
+    before(:each) do
+      @results = FactoryGirl.create_list(:result, 5)
+      visit results_path
+    end
+    #Lists results
+
+    scenario "shows results table" do
+      expect(all(".results-row").count).to eq 5
+    end
+
+    # scenario "shows number of blocks for each row" do
+    #     within("#batch-row-#{@course_batches.first.id}") do
+    #       expect(page).to have_content @course_batches.first.blocks.count
+    #     end
+    # end
+
+    # scenario "shows number of courses for each row" do
+    #   within("#batch-row-#{@course_batches.first.id}") do
+    #     expect(page).to have_content @course_batches.first.courses.count
+    #   end
+    # end
+
+    # scenario "shows status for each row" do
+    #   within("#batch-row-#{@course_batches.first.id}") do
+    #     expect(page).to have_content "Open"
+    #   end
+    # end
+
 
   end
 

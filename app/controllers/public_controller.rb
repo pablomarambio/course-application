@@ -22,4 +22,9 @@ class PublicController < ApplicationController
   def batches
     @course_batches = CourseBatch.all
   end
+
+  def results
+    @results = Result.all
+  end
+
 end
