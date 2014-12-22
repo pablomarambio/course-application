@@ -12,4 +12,14 @@ describe Application do
   it {should belong_to :course}
 
 
+  context "csv export" do
+    subject { FactoryGirl.create_list(:application, 5) }
+
+    it { should respond_to(:to_csv) }
+
+
+
+  end
+
+
 end
