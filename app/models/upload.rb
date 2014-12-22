@@ -6,12 +6,12 @@ class Upload < ActiveRecord::Base
   validates :upload_type, presence: true
   validates :file, presence: true
 
-  after_create :process_file
+  after_create :read_rows
 
   attr_accessor :rows
   has_many :upload_results
 
-  def process_file
+  def read_rows
     self.rows = []
     CSV.parse(file, {headers: true, col_sep: ';' }) do |row|
       self.rows << row
@@ -34,7 +34,7 @@ class Upload < ActiveRecord::Base
       unless row["ID"].nil?
         @user = User.where(id:row["ID"]).first
         #check if update
-        if @user && (row["Email"] or row["Name"] or row["Password"] or row["RUT"] or row["Course_Batch"])
+        if @user && (row["Email"] || row["Name"] || row["Password"] || row["RUT"] || row["Course_Batch"])
           @user.email = row["Email"] if row["Email"]
           @user.name = row["Name"] if row["Name"]
           @user.password = row["Password"] if row["Password"]
@@ -130,6 +130,62 @@ class Upload < ActiveRecord::Base
         end
       end#unless
 
+    when "results"
+      unless row["RUT"].nil?
+        @user = User.where(rut:row["RUT"]).first
+        unless @user.blank?
+          if (row["Block"] && row["Course"])
+            #update or create
+            @block =  Block.where(name: row["Block"]).first
+            if @block
+                #check if result exists
+                @result = Result.find_or_initialize_by(user_id: @user.id, block_id: @block.id)
+                unless @result.id.nil?
+                  #we are updating
+                  @course =  Course.where(name: row["Course"]).first
+                  if @course
+                    @result.course = @course
+                    if @result.save
+                      upload_results << UploadResult.create(message:"Result updated", row_number: index, result_type: "Success")
+                    else
+                      upload_results << UploadResult.create(message:@result.errors.full_messages.to_sentence, row_number: index, result_type: "Error")
+                    end
+                  else
+                    #missing course
+                    upload_results << UploadResult.create(message:"Course not found", row_number: index, result_type: "Error")
+                  end
+                else
+                  #we are creating
+                  @course =  Course.where(name: row["Course"]).first
+                  if @course
+                    @result.course = @course
+                    if @result.save
+                      upload_results << UploadResult.create(message:"Result created", row_number: index, result_type: "Success")
+                    else
+                      upload_results << UploadResult.create(message:@result.errors.full_messages.to_sentence, row_number: index, result_type: "Error")
+                    end
+                  else
+                    #missing course
+                    upload_results << UploadResult.create(message:"Course not found", row_number: index, result_type: "Error")
+                  end
+                end
+            else
+              #missing block
+              upload_results << UploadResult.create(message:"Block not found", row_number: index, result_type: "Error")
+            end
+          else
+            #delete
+            if @user.applications.destroy_all
+              upload_results << UploadResult.create(message:"All applications for user have been deleted", row_number: index, result_type: "Success")
+            end
+          end
+        else
+          upload_results << UploadResult.create(message:"Student not found", row_number: index, result_type: "Error")
+        end
+
+      else
+
+      end
     end #when
   end #def
 

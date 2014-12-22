@@ -13,7 +13,7 @@ FactoryGirl.define do
       file {File.open("spec/test_files/courses.csv", "r:UTF-8").read}
     end
 
-    trait :courses do
+    trait :results do
       upload_type :results
       file {File.open("spec/test_files/results.csv", "r:UTF-8").read}
     end

@@ -32,7 +32,7 @@ describe CourseBatch do
   it "can have multiple blocks" do
     subject.blocks << FactoryGirl.create(:block_with_courses)
     subject.blocks << FactoryGirl.create(:block_with_courses)
-    expect(subject.blocks.count).to eq 4
+    expect(subject.blocks.count).to eq 5
   end
 
 end

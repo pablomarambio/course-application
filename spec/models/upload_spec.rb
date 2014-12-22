@@ -7,14 +7,14 @@ describe Upload do
   it { should respond_to(:upload_type) }
   it { should respond_to(:file) }
   it { should respond_to(:rows)}
-  it {should respond_to(:process_file)}
+  it {should respond_to(:read_rows)}
   it {should respond_to(:process_row)}
 
   it {should validate_presence_of :upload_type}
   it {should validate_presence_of :file}
 
 
-  context "users upload" do
+  context "of users" do
 
     before (:each) { @users_upload = FactoryGirl.create(:upload, :users)}
 
@@ -23,6 +23,8 @@ describe Upload do
     it "should read CSV file and split it into rows" do
       expect(subject.rows.count).to eq 10
     end
+
+    it "should fail when missing any of the required columns"
 
     it "should create user from CSV row without id" do
       subject.process_row(1)
@@ -76,7 +78,7 @@ describe Upload do
 
   end
 
-  context "courses upload" do
+  context "of courses" do
 
     before (:each) { @courses_upload = FactoryGirl.create(:upload, :courses)}
 
@@ -85,6 +87,8 @@ describe Upload do
     it "should read CSV file and split it into rows" do
       expect(subject.rows.count).to eq 9
     end
+
+    it "should fail when missing any of the required columns"
 
     it "should create course from CSV row without id and find/update or create batch and block" do
       #Creates the course "Maths". If the batch "elementary" doesn't exist, it creates it. If the block "morning" doesn't exist,
@@ -202,6 +206,107 @@ describe Upload do
       expect(subject.upload_results[0].message).to eq "Name has already been taken"
       expect(subject.upload_results[0].result_type).to eq "Error"
     end
+
+  end
+
+  context "of results" do
+
+    before (:each) { @results_upload = FactoryGirl.create(:upload, :results)}
+
+    subject {@results_upload}
+
+    it "should read CSV file and split it into rows" do
+      expect(subject.rows.count).to eq 7
+    end
+
+    it "should fail when RUT, Block or Course columns are missing"
+
+    it "should return error for row with non-existent RUT" do
+      subject.process_row(1)
+      expect(subject.upload_results[0].message).to eq "Student not found"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
+
+    it "should return error for a row with bad block" do
+      @block = FactoryGirl.build(:block, name: "morning")
+      @course = FactoryGirl.create(:course, name: "English", block_id: @block.id)
+      @block.courses << @course
+      @block.save
+      @student = FactoryGirl.create(:user, :completed_application, rut: "14569484")
+      @student.applications << Application.create(user_id: @student.id, course_id: @course.id, priority: 1)
+      subject.process_row(2)
+      expect(subject.upload_results[0].message).to eq "Block not found"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+      expect(@student.results.count).to eq 0
+    end
+
+    it "should return error for a row with bad course" do
+      @block = FactoryGirl.build(:block, name: "morning")
+      @course = FactoryGirl.create(:course, name: "English", block_id: @block.id)
+      @block.courses << @course
+      @block.save
+      @student = FactoryGirl.create(:user, :completed_application, rut: "14569484")
+      @student.applications << Application.create(user_id: @student.id, course_id: @course.id, priority: 1)
+      subject.process_row(3)
+      expect(subject.upload_results[0].message).to eq "Course not found"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+      expect(@student.results.count).to eq 0
+    end
+
+    it "should update course in application when result already exists"  do
+      @block = FactoryGirl.build(:block, name: "morning")
+      @course = FactoryGirl.create(:course, name: "English", block_id: @block.id)
+      @course2 = FactoryGirl.create(:course, name: "Literature", block_id: @block.id)
+      @block.courses << @course
+      @block.courses << @course2
+      @block.save
+      @student = FactoryGirl.create(:user, :completed_application, rut: "8457638")
+      @student.applications << Application.create(user_id: @student.id, course_id: @course.id, priority: 1)
+      @student.applications << Application.create(user_id: @student.id, course_id: @course2.id, priority: 2)
+      @student.results << Result.create(user_id: @student.id, course_id:@course.id, block_id: @block.id)
+      subject.process_row(5)
+      expect(subject.upload_results[0].message).to eq "Result updated"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+      expect(@student.results.count).to eq 1
+      expect(@student.results.first.user_id).to eq @student.id
+      expect(@student.results.first.course.name).to eq "Literature"
+      expect(@student.results.first.block.name).to eq "morning"
+    end
+
+    it "should create a result from a correct row"do
+      @block = FactoryGirl.build(:block, name: "morning")
+      @course = FactoryGirl.create(:course, name: "English", block_id: @block.id)
+      @block.courses << @course
+      @block.save
+      @student = FactoryGirl.create(:user, :completed_application, rut: "8457638")
+      @student.applications << Application.create(user_id: @student.id, course_id: @course.id, priority: 1)
+      subject.process_row(4)
+      expect(subject.upload_results[0].message).to eq "Result created"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+      expect(@student.results.count).to eq 1
+      expect(@student.results.first.user_id).to eq @student.id
+      expect(@student.reload.results.first.course.name).to eq "English"
+      expect(@student.results.first.block.name).to eq "morning"
+    end
+
+    it "should delete all results for a student from a row with only ID" do
+      @student = FactoryGirl.create(:user, :completed_application, rut: "21231231")
+      @student2 = FactoryGirl.create(:user, :completed_application, rut: "123569484")
+      subject.process_row(6)
+      expect(@student.applications.count).to eq 0
+      expect(@student2.applications.count).to eq 9
+      expect(subject.upload_results[0].message).to eq "All applications for user have been deleted"
+      expect(subject.upload_results[0].result_type).to eq "Success"
+    end
+
+    it "should show error when trying to delete results for student with non existing RUT" do
+      @student = FactoryGirl.create(:user, :completed_application, rut: "14569484")
+      subject.process_row(7)
+      expect(@student.applications.count).to eq 9
+      expect(subject.upload_results[0].message).to eq "Student not found"
+      expect(subject.upload_results[0].result_type).to eq "Error"
+    end
+
 
   end
 
