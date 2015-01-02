@@ -37,7 +37,7 @@ describe Course do
 
     it "should generate correct headers" do
       @csv = CSV.parse(Course.to_csv, {col_sep: ';'})
-      expect(@csv.first).to eq ["ID","Name","Batch","Block","From","To","Classroom","Capacity"]
+      expect(@csv.first).to eq ["id","Name","Batch","Block","From","To","Classroom","Capacity"]
     end
 
     it "should generate correct data" do

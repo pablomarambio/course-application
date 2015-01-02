@@ -52,7 +52,7 @@ end
 
 def self.to_csv
   CSV.generate(col_sep:";") do |csv|
-    csv << ["ID","Email","Name","RUT","Password","Course_Batch"]
+    csv << ["id","Email","Name","RUT","Password","Course_Batch"]
     all.each do |user|
       csv << [:id, :email, :name, :rut,:password,:course_batch_id,"\n"].map { |f| user[f] unless f == "\n"}
     end

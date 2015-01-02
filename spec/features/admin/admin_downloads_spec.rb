@@ -56,12 +56,18 @@ feature 'Admin - Downloads', :devise do
       end
 
       scenario "dowloaded CSV has all the required columns" do
-        expect(@csv.first).to eq ["ID","Email","Name","RUT","Password","Course_Batch"]
+        expect(@csv.first).to eq ["id","Email","Name","RUT","Password","Course_Batch"]
       end
 
       scenario "downloaded CSV has correct data" do
         @user = User.first
         expect(@csv[1]).to eq [@user.id.to_s, @user.email.to_s, @user.name.to_s, @user.rut.to_s, nil, @user.course_batch_id ,nil]
+      end
+
+      scenario 'downloaded CSV has id column (not ID)' do
+        #this fixes problems with Excel 2010
+        expect(@csv[0][0]).to eq 'id'
+
       end
 
     end
@@ -83,12 +89,18 @@ feature 'Admin - Downloads', :devise do
       end
 
       scenario "dowloaded CSV has all the required columns" do
-        expect(@csv.first).to eq ["ID","Name","Batch","Block","From","To","Classroom","Capacity"]
+        expect(@csv.first).to eq ["id","Name","Batch","Block","From","To","Classroom","Capacity"]
       end
 
       scenario "downloaded CSV has correct data" do
         @course = Course.first
         expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.try(:from).to_s, @course.block.try(:to).to_s,  @course.classroom.to_s , @course.capacity.to_s,"\n"]
+      end
+
+      scenario 'downloaded CSV has id column (not ID)' do
+        #this fixes problems with Excel 2010
+        expect(@csv[0][0]).to eq 'id'
+
       end
 
     end

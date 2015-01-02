@@ -127,7 +127,7 @@ describe User do
 
       it "should generate correct headers" do
         @csv = CSV.parse(User.to_csv, {col_sep: ';'})
-        expect(@csv.first).to eq ["ID","Email","Name","RUT","Password","Course_Batch"]
+        expect(@csv.first).to eq ["id","Email","Name","RUT","Password","Course_Batch"]
       end
 
       it "should generate correct data" do
