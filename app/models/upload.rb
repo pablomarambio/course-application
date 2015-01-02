@@ -5,14 +5,28 @@ class Upload < ActiveRecord::Base
 
   validates :upload_type, presence: true
   validates :file, presence: true
+  validate :header_checker, unless: "file.blank?"
 
   after_create :read_rows
 
   attr_accessor :rows
   has_many :upload_results
 
-  #user columns ["ID","Email","Name","RUT","Password","Course_Batch"]
-  #course columns ["ID","Name","Batch","Block","From","To","Classroom","Capacity"]
+  USER_HEADERS = ["id","Email","Name","RUT","Password","Course_Batch"]
+  COURSE_HEADERS = ["id","Name","Batch","Block","From","To","Classroom","Capacity"]
+  RESULT_HEADERS = ["RUT","Block","Course"]
+
+  def header_checker
+    headers = CSV.parse(file, {headers: true, col_sep: ';' }).headers
+    case upload_type
+    when "users"
+        errors.add(:file, "File has incorrect headers. It should contain:#{USER_HEADERS}, uploaded file has: #{headers}" ) unless headers == USER_HEADERS
+    when "courses"
+        errors.add(:file, "File has incorrect headers. It should contain:#{COURSE_HEADERS}, uploaded file has: #{headers}" ) unless headers == COURSE_HEADERS
+    when "results"
+        errors.add(:file, "File has incorrect headers. It should contain:#{RESULT_HEADERS}, uploaded file has: #{headers}" ) unless headers == RESULT_HEADERS
+    end
+  end
 
 
   def read_rows
@@ -35,8 +49,8 @@ class Upload < ActiveRecord::Base
     case upload_type
 
     when "users"
-      unless row["ID"].nil?
-        @user = User.where(id:row["ID"]).first
+      unless row["id"].nil?
+        @user = User.where(id:row["id"]).first
         #check if update
         if @user && (row["Email"] || row["Name"] || row["Password"] || row["RUT"] || row["Course_Batch"])
           @user.email = row["Email"] if row["Email"]
@@ -69,8 +83,8 @@ class Upload < ActiveRecord::Base
       end #unless
 
     when "courses"
-      unless row["ID"].nil?
-        @course = Course.where(id:row["ID"]).first
+      unless row["id"].nil?
+        @course = Course.where(id:row["id"]).first
         #check if update
         if @course && (row["Name"] or row["Classroom"] or row["Capacity"] or row["Batch"] or row["Block"])
             #update or create block

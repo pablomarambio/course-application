@@ -62,5 +62,11 @@ feature 'Admin for Users - CSV upload', :devise do
   #test result output
   #page should contain information about 3 errors with details
 
+  scenario 'empty lines in CSV are skipped'
+  #setup users
+  #upload file
+  #test result output
+  #page should contain info about skipped lines
+
 
 end

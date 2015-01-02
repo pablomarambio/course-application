@@ -1,6 +1,6 @@
 describe Upload do
 
-  before(:each) { @upload = FactoryGirl.create :upload }
+  before(:each) { @upload = FactoryGirl.create(:upload, :users)}
 
   subject { @upload }
 
@@ -23,8 +23,6 @@ describe Upload do
     it "should read CSV file and split it into rows" do
       expect(subject.rows.count).to eq 10
     end
-
-    it "should fail when missing any of the required columns"
 
     it "should create user from CSV row without id" do
       subject.process_row(1)
@@ -78,7 +76,23 @@ describe Upload do
 
   end
 
-  context "of courses" do
+  context "users with file errors" do
+    before { @bad_users = FactoryGirl.build(:upload, :users_with_missing_columns) }
+
+    subject {@bad_users }
+
+    it "should not be valid" do
+      expect(subject.valid?).to be false
+    end
+
+    it "should have error message about missing columns on file field" do
+      subject.save
+      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::USER_HEADERS}, uploaded file has: [\"id\", \"Email\", \"RUT\", \"Password\"]"
+    end
+
+  end
+
+  context "courses" do
 
     before (:each) { @courses_upload = FactoryGirl.create(:upload, :courses)}
 
@@ -87,8 +101,6 @@ describe Upload do
     it "should read CSV file and split it into rows" do
       expect(subject.rows.count).to eq 9
     end
-
-    it "should fail when missing any of the required columns"
 
     it "should create course from CSV row without id and find/update or create batch and block" do
       #Creates the course "Maths". If the batch "elementary" doesn't exist, it creates it. If the block "morning" doesn't exist,
@@ -209,7 +221,23 @@ describe Upload do
 
   end
 
-  context "of results" do
+  context "courses with file errors" do
+    before { @bad_courses = FactoryGirl.build(:upload, :courses_with_missing_columns) }
+
+    subject {@bad_courses }
+
+    it "should not be valid" do
+      expect(subject.valid?).to be false
+    end
+
+    it "should have error message about missing columns on file field" do
+      subject.save
+      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::COURSE_HEADERS}, uploaded file has: [\"id\", \"Name\", \"Block\", \"From\", \"To\", \"Capacity\"]"
+    end
+
+  end
+
+  context "results" do
 
     before (:each) { @results_upload = FactoryGirl.create(:upload, :results)}
 
@@ -218,8 +246,6 @@ describe Upload do
     it "should read CSV file and split it into rows" do
       expect(subject.rows.count).to eq 7
     end
-
-    it "should fail when RUT, Block or Course columns are missing"
 
     it "should return error for row with non-existent RUT" do
       subject.process_row(1)
@@ -306,7 +332,21 @@ describe Upload do
       expect(subject.upload_results[0].message).to eq "Student not found"
       expect(subject.upload_results[0].result_type).to eq "Error"
     end
+  end
 
+  context "results with file errors" do
+    before { @bad_results = FactoryGirl.build(:upload, :results_with_missing_columns) }
+
+    subject {@bad_results }
+
+    it "should not be valid" do
+      expect(subject.valid?).to be false
+    end
+
+    it "should have error message about missing columns on file field" do
+      subject.save
+      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::RESULT_HEADERS}, uploaded file has: [\"RUT\", \"Block\"]"
+    end
 
   end
 
