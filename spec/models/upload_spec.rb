@@ -76,7 +76,7 @@ describe Upload do
 
   end
 
-  context "users with file errors" do
+  context "users with bad column headers" do
     before { @bad_users = FactoryGirl.build(:upload, :users_with_missing_columns) }
 
     subject {@bad_users }
@@ -87,10 +87,17 @@ describe Upload do
 
     it "should have error message about missing columns on file field" do
       subject.save
-      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::USER_HEADERS}, uploaded file has: [\"id\", \"Email\", \"RUT\", \"Password\"]"
+      expect(subject.errors[:file]).to include " has incorrect headers. It should contain: #{Upload::USER_HEADERS.join(', ')}, uploaded file has: id, Email, RUT, Password"
     end
-
   end
+
+  # context "users with blanks" do
+  #   before {@users_with_blanks = FactoryGirl.create(:upload. :users_with_blanks)}
+
+
+
+
+  # end
 
   context "courses" do
 
@@ -221,7 +228,7 @@ describe Upload do
 
   end
 
-  context "courses with file errors" do
+  context "courses with bad column headers" do
     before { @bad_courses = FactoryGirl.build(:upload, :courses_with_missing_columns) }
 
     subject {@bad_courses }
@@ -232,7 +239,7 @@ describe Upload do
 
     it "should have error message about missing columns on file field" do
       subject.save
-      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::COURSE_HEADERS}, uploaded file has: [\"id\", \"Name\", \"Block\", \"From\", \"To\", \"Capacity\"]"
+      expect(subject.errors[:file]).to include " has incorrect headers. It should contain: #{Upload::COURSE_HEADERS.join(', ')}, uploaded file has: id, Name, Block, From, To, Capacity"
     end
 
   end
@@ -334,7 +341,7 @@ describe Upload do
     end
   end
 
-  context "results with file errors" do
+  context "results  with bad column headers" do
     before { @bad_results = FactoryGirl.build(:upload, :results_with_missing_columns) }
 
     subject {@bad_results }
@@ -345,7 +352,7 @@ describe Upload do
 
     it "should have error message about missing columns on file field" do
       subject.save
-      expect(subject.errors[:file]).to include "File has incorrect headers. It should contain:#{Upload::RESULT_HEADERS}, uploaded file has: [\"RUT\", \"Block\"]"
+      expect(subject.errors[:file]).to include " has incorrect headers. It should contain: #{Upload::RESULT_HEADERS.join(', ')}, uploaded file has: RUT, Block"
     end
 
   end

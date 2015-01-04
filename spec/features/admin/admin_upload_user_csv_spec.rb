@@ -38,6 +38,16 @@ feature 'Admin for Users - CSV upload', :devise do
     expect(User.count).to eq 5
   end
 
+  scenario 'error is displayed when CSV is missing columns' do
+    visit upmin_path
+    click_link "Upload students"
+    attach_file :upload_file, "spec/test_files/students_with_missing_columns.csv"
+    click_button "Upload"
+    expect(current_path).to eq upmin.new_upload_path(:users)
+    expect(User.count).to eq 1
+    expect(page).to have_content "File has incorrect headers. It should contain: id, Email, Name, RUT, Password, Course_Batch, uploaded file has: id, Email, RUT, Password"
+  end
+
   scenario 'CSV file upload displays results'
   #   visit upmin_path
   #   click_link "Upload students"

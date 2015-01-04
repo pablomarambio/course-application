@@ -13,8 +13,8 @@ module Upmin
           # flash[:notice] = @upload.results_for_row.inspect
           redirect_to @upload
         else
-          flash.now[:alert] = @upload.errors
-          render(:new)
+          flash[:alert] = @upload.errors.full_messages_for(:file).first
+          redirect_to new_upload_path(params[:upload][:upload_type])
         end
     end
 

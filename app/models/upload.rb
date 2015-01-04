@@ -20,11 +20,11 @@ class Upload < ActiveRecord::Base
     headers = CSV.parse(file, {headers: true, col_sep: ';' }).headers
     case upload_type
     when "users"
-        errors.add(:file, "File has incorrect headers. It should contain:#{USER_HEADERS}, uploaded file has: #{headers}" ) unless headers == USER_HEADERS
+        errors.add(:file, " has incorrect headers. It should contain: #{USER_HEADERS.join(", ")}, uploaded file has: #{headers.join(", ")}" ) unless headers == USER_HEADERS
     when "courses"
-        errors.add(:file, "File has incorrect headers. It should contain:#{COURSE_HEADERS}, uploaded file has: #{headers}" ) unless headers == COURSE_HEADERS
+        errors.add(:file, " has incorrect headers. It should contain: #{COURSE_HEADERS.join(", ")}, uploaded file has: #{headers.join(", ")}" ) unless headers == COURSE_HEADERS
     when "results"
-        errors.add(:file, "File has incorrect headers. It should contain:#{RESULT_HEADERS}, uploaded file has: #{headers}" ) unless headers == RESULT_HEADERS
+        errors.add(:file, " has incorrect headers. It should contain: #{RESULT_HEADERS.join(", ")}, uploaded file has: #{headers.join(", ")}" ) unless headers == RESULT_HEADERS
     end
   end
 
