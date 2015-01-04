@@ -91,13 +91,20 @@ describe Upload do
     end
   end
 
-  # context "users with blanks" do
-  #   before {@users_with_blanks = FactoryGirl.create(:upload. :users_with_blanks)}
+  context "users with blanks" do
+
+    before {@users_with_blanks = FactoryGirl.create(:upload, :users_with_blanks)}
+
+    subject {@users_with_blanks}
+
+    it "should reject rows with no values" do
+      expect(subject.rows.count).to eq 6
+    end
 
 
 
 
-  # end
+  end
 
   context "courses" do
 

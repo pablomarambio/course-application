@@ -31,8 +31,8 @@ class Upload < ActiveRecord::Base
 
   def read_rows
     self.rows = []
-    CSV.parse(file, {headers: true, col_sep: ';' }) do |row|
-      self.rows << row
+    CSV.parse(file, {headers: true, col_sep: ';'}) do |row|
+      self.rows << row unless row.to_hash.values.all?(&:nil?)
     end
   end
 
