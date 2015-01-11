@@ -1,9 +1,9 @@
 %table.table
   %thead
     %tr
-      - query.upmin_results.first.attributes.each do |attribute|
+      - query.klass.attributes.each do |attribute|
         %th
-          = attribute.name
+          = attribute
       %th
       %th
   - query.upmin_results.each do |result|

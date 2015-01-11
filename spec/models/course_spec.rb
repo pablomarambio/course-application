@@ -44,7 +44,7 @@ describe Course do
       @block = FactoryGirl.create :block_with_courses
       @block.courses << @course
       @csv = CSV.parse(Course.to_csv, {col_sep: ';'})
-      expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.from.to_s, @course.block.to.to_s,  @course.classroom.to_s , @course.capacity.to_s,"\n"]
+      expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.from.strftime("%H:%M").to_s, @course.block.to.strftime("%H:%M").to_s,  @course.classroom.to_s , @course.capacity.to_s]
     end
 
 

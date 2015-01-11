@@ -94,7 +94,7 @@ feature 'Admin - Downloads', :devise do
 
       scenario "downloaded CSV has correct data" do
         @course = Course.first
-        expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.try(:from).to_s, @course.block.try(:to).to_s,  @course.classroom.to_s , @course.capacity.to_s,"\n"]
+        expect(@csv[1]).to eq [@course.id.to_s, @course.name.to_s, @course.course_batch_id.to_s, @course.block_id.to_s, @course.block.try(:from).strftime("%H:%M").to_s, @course.block.try(:to).strftime("%H:%M").to_s,  @course.classroom.to_s , @course.capacity.to_s]
       end
 
       scenario 'downloaded CSV has id column (not ID)' do

@@ -14,7 +14,7 @@ class Course < ActiveRecord::Base
     CSV.generate(col_sep:";") do |csv|
       csv << ["id","Name","Batch","Block","From","To","Classroom","Capacity"]
       all.each do |course|
-        csv << [course.id, course.name, course.course_batch_id, course.block_id, course.block.try(:from),course.block.try(:to), course.classroom, course.capacity,"\n"]
+        csv << [course.id, course.name, course.course_batch_id, course.block_id, course.block.try(:from).try(:strftime,"%H:%M"),course.block.try(:to).try(:strftime,"%H:%M"), course.classroom, course.capacity]
       end
     end
   end

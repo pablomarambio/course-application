@@ -49,7 +49,7 @@ class Upload < ActiveRecord::Base
     case upload_type
 
     when "users"
-      unless row["id"].nil?
+      unless row["id"].blank?
         @user = User.where(id:row["id"]).first
         #check if update
         if @user && (row["Email"] || row["Name"] || row["Password"] || row["RUT"] || row["Course_Batch"])
@@ -83,7 +83,7 @@ class Upload < ActiveRecord::Base
       end #unless
 
     when "courses"
-      unless row["id"].nil?
+      unless row["id"].blank?
         @course = Course.where(id:row["id"]).first
         #check if update
         if @course && (row["Name"] or row["Classroom"] or row["Capacity"] or row["Batch"] or row["Block"])
@@ -98,8 +98,8 @@ class Upload < ActiveRecord::Base
               if @block.valid?
                 #update course
                 @course.name = row["Name"] if row["Name"]
-                @course.name = row["Classroom"] if row["Classroom"]
-                @course.name = row["Capacity"] if row["Capacity"]
+                @course.classroom = row["Classroom"] if row["Classroom"]
+                @course.capacity = row["Capacity"] if row["Capacity"]
                 if @course.save
                   upload_results << UploadResult.create(message:"Course updated", row_number: index, result_type: "Success")
                 else
