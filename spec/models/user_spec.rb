@@ -17,8 +17,6 @@ describe User do
   it {should validate_presence_of :rut}
   it {should validate_uniqueness_of  :rut}
 
-  it {should validate_numericality_of :rut}
-
   it {should define_enum_for :role}
 
   it {should belong_to :course_batch}

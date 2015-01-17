@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   enum role: [:user, :vip, :admin]
   after_initialize :set_default_role, :if => :new_record?
-  validates :rut, uniqueness: true, presence: true, numericality: true
+  validates :rut, uniqueness: true, presence: true
   validates :name, presence: true
 
   belongs_to :course_batch

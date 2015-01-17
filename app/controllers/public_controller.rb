@@ -4,6 +4,8 @@ class PublicController < ApplicationController
         if user_signed_in? && !current_user.course_batch.nil?
           @batch = current_user.course_batch
           @block = @batch.blocks.first
+        else
+          render "devise/sessions/new"
         end
   end
 
