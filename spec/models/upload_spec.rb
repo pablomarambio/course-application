@@ -16,7 +16,10 @@ describe Upload do
 
   context "of users" do
 
-    before (:each) { @users_upload = FactoryGirl.create(:upload, :users)}
+    before do
+      @users_upload = FactoryGirl.create(:upload, :users)
+      @course_batch = FactoryGirl.create(:course_batch, :with_blocks, name: "basica")
+    end
 
     subject {@users_upload}
 
@@ -34,7 +37,7 @@ describe Upload do
       expect(@test_user.rut).to eq "14569484"
       expect(@test_user.reload.email).to eq "pablo@pablo.com"
       expect(@test_user.encrypted_password.nil?).to eq false
-      expect(@test_user.course_batch_id).to eq 1
+      expect(@test_user.course_batch.name).to eq "basica"
     end
 
     it "should delete user from CSV row with only id" do
@@ -51,7 +54,7 @@ describe Upload do
       expect(@test_user.reload.name).to eq "Carlos"
       expect(@test_user.reload.rut).to eq "8457638"
       expect(@test_user.reload.email).to eq "test@test.com"
-      expect(@test_user.reload.course_batch_id).to eq 1
+      expect(@test_user.reload.course_batch.name).to eq "basica"
     end
 
     it "should return error for a row with blanks" do

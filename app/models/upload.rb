@@ -46,7 +46,9 @@ class Upload < ActiveRecord::Base
           @user.name = row["Name"] if row["Name"]
           @user.password = row["Password"] if row["Password"]
           @user.rut =  row["RUT"] if row["RUT"]
-          @user.course_batch_id = row["Course_Batch"] if row["Course_Batch"]
+          if row["Course_Batch"]
+            @user.course_batch = CourseBatch.where(name: row["Course_Batch"]).first
+          end
           if @user.save
             # results_for_row[index] = "User updated"
             upload_results << UploadResult.create(message:"User updated", row_number: index, result_type: "Success")
@@ -63,7 +65,10 @@ class Upload < ActiveRecord::Base
         end
       else
         #id was nil, so create
-        @user = User.new(email: row["Email"], name: row["Name"], password:row["Password"], rut: row["RUT"], course_batch_id: row["Course_Batch"])
+        @user = User.new(email: row["Email"], name: row["Name"], password:row["Password"], rut: row["RUT"])
+        if row["Course_Batch"]
+          @user.course_batch = CourseBatch.where(name: row["Course_Batch"]).first
+        end
         if @user.save
           upload_results << UploadResult.create(message:"User created", row_number: index, result_type: "Success")
         else
@@ -77,14 +82,18 @@ class Upload < ActiveRecord::Base
         #check if update
         if @course && (row["Name"] or row["Classroom"] or row["Capacity"] or row["Batch"] or row["Block"])
             #update or create block
-            @block = Block.find_or_initialize_by(name: row["Block"],from: row["From"], to: row["To"])
+            from = "2000-01-01 #{row['From']}"
+            to =  "2000-01-01 #{row['To']}"
+            @block = Block.find_or_initialize_by(name: row["Block"])
+            @block.to = to.to_time(:utc)
+            @block.from = from.to_time(:utc)
             @block.courses << @course
             #update or create batch
             @course_batch = CourseBatch.find_or_initialize_by(name: row["Batch"])
             @course_batch.blocks << @block
             @course.course_batch = @course_batch
-            if @course_batch.valid?
-              if @block.valid?
+            if @course_batch.save
+              if @block.save
                 #update course
                 @course.name = row["Name"] if row["Name"]
                 @course.classroom = row["Classroom"] if row["Classroom"]
@@ -116,8 +125,12 @@ class Upload < ActiveRecord::Base
         @course = Course.new(name: row["Name"], classroom:row["Classroom"], capacity: row["Capacity"])
         if @course.save
         ## find or create block
-          @block = Block.find_or_initialize_by(name: row["Block"],from: row["From"], to: row["To"])
-          @block.courses << @course
+             from = "2000-01-01 #{row['From']}"
+             to =  "2000-01-01 #{row['To']}"
+            @block = Block.find_or_initialize_by(name: row["Block"])
+            @block.to = to.to_time(:utc)
+            @block.from = from.to_time(:utc)
+            @block.courses << @course
           if @block.save
             # # find or create batch
             @course_batch = CourseBatch.find_or_initialize_by(name: row["Batch"])

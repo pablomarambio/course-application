@@ -1,9 +1,13 @@
 class PublicController < ApplicationController
 
   def index
-        if user_signed_in? && !current_user.course_batch.nil?
-          @batch = current_user.course_batch
-          @block = @batch.blocks.first
+        if user_signed_in?
+           unless current_user.course_batch.nil?
+            @batch = current_user.course_batch
+            @block = @batch.blocks.first
+          else
+            flash.now[:error] = "No course batch assigned"
+          end
         else
           render "devise/sessions/new"
         end

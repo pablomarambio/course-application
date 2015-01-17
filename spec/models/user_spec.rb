@@ -23,6 +23,11 @@ describe User do
   it {should have_many :applications}
   it {should have_many :results}
 
+  it "should not have any password lenght constraint" do
+    @user = FactoryGirl.create(:user, password:"a")
+    expect(@user.valid?).to eq true
+  end
+
   it "can be assigned to a course batch" do
     @course_batch = FactoryGirl.create(:course_batch, :with_blocks)
     @user.course_batch = @course_batch
